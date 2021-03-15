@@ -36,6 +36,3 @@ build/
 /.mvn
 mvnw
 mvnw.cmd
-
-# Frontend Build
-src/main/resources/static
