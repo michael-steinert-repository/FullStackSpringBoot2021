@@ -116,12 +116,24 @@ function App() {
 
     const renderStudents = () => {
         if (fetching) {
-            return <Spin/>;
+            return (<Spin/>);
         }
         if (students.length <= 0) {
-            return <Empty/>;
+            return( <>
+                <Button
+                    onClick={() => setShowDrawer(!showDrawer)}
+                    type="primary" shape="round" icon={<PlusOutlined/>} size="small">
+                    Add New Student
+                </Button>
+                <StudentDrawerForm
+                    showDrawer={showDrawer}
+                    setShowDrawer={setShowDrawer}
+                    fetchStudents={fetchStudents}
+                />
+                <Empty/>
+            </>);
         }
-        return <>
+        return( <>
             <StudentDrawerForm showDrawer={showDrawer} setShowDrawer={setShowDrawer} fetchStudents={fetchStudents}/>
             <Table
                 dataSource={students}
@@ -137,7 +149,7 @@ function App() {
                             onClick={() => setShowDrawer(!showDrawer)}>Add New Student</Button>
                 </>
             }}/>
-        </>;
+        </>);
     }
 
     return (
