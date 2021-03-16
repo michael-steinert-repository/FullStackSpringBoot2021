@@ -100,6 +100,11 @@ function App() {
             successNotification("Student deleted", `Student with ${studentId} was deleted`);
             /* Invoke the Method fetchStudents as a Callback Method */
             callback();
+        }).catch(error => {
+            error.response.json().then(res => {
+                console.log(res);
+                errorNotification("There was an Issue",`${res.message} [${res.status}] [${res.error}]`)
+            });
         });
     }
 

@@ -1,5 +1,7 @@
 package com.example.FullStackSpringBoot2021.student;
 
+import com.example.FullStackSpringBoot2021.student.exception.BadRequestException;
+import com.example.FullStackSpringBoot2021.student.exception.StudentNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +17,17 @@ public class StudentService {
     }
 
     public void addStudent(Student student) {
+        Boolean existsEmail = studentRepository.selectExistsEmail(student.getEmail());
+        if (existsEmail) {
+            throw new BadRequestException("Email " + student.getEmail() + " is taken");
+        }
         studentRepository.save(student);
     }
 
     public void deleteStudent(Long studentId) {
+        if (!studentRepository.existsById(studentId)) {
+            throw new StudentNotFoundException("Student with id " + studentId + " does not exists");
+        }
         studentRepository.deleteById(studentId);
     }
 }
