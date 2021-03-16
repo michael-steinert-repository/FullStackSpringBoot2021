@@ -1,12 +1,39 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect} from 'react';
 import {getAllStudents} from './client';
-import {Table, Layout, Menu, Breadcrumb, Spin, Empty} from 'antd';
-import {DesktopOutlined, PieChartOutlined, FileOutlined, TeamOutlined, UserOutlined} from '@ant-design/icons';
+import {Table, Layout, Menu, Breadcrumb, Spin, Empty, Button, Badge, Tag, Avatar} from 'antd';
+import {
+    DesktopOutlined,
+    PieChartOutlined,
+    FileOutlined,
+    TeamOutlined,
+    UserOutlined,
+    PlusOutlined
+} from '@ant-design/icons';
+import StudentDrawerForm from './StudentDrawerForm';
 import './App.css';
 
 const {Header, Content, Footer, Sider} = Layout;
 const {SubMenu} = Menu;
+const TheAvatar = ({name}) => {
+    let trim = name.trim();
+    if (trim.length === 0) {
+        return <Avatar icon={<UserOutlined/>}/>;
+    }
+    const split = trim.split(" ");
+    if (split.length === 1) {
+        return <Avatar>{name.charAt(0)}</Avatar>
+    }
+    return <Avatar>{`${name.charAt(0)}${name.charAt(name.length - 1)}`}</Avatar>
+}
 const columns = [
+    {
+        title: '',
+        dataIndex: 'avatar',
+        key: 'avatar',
+        render: (text, student) => {
+            return <TheAvatar name={student.name}/>;
+        }
+    },
     {
         title: 'ID',
         dataIndex: 'id',
@@ -33,14 +60,15 @@ function App() {
     const [collapsed, setCollapsed] = useState(false);
     const [fetching, setFetching] = useState(true);
     const [students, setStudents] = useState([]);
+    const [showDrawer, setShowDrawer] = useState(false);
 
     const fetchStudents = () => {
-        getAllStudents()
-            .then(response => response.json())
+        getAllStudents().then(response => response.json())
             .then(dataFromJsonFunction => {
                 setStudents(dataFromJsonFunction);
                 setFetching(false);
             });
+        setFetching(false);
     }
 
     useEffect(() => {
@@ -50,17 +78,29 @@ function App() {
     }, []);
 
     const renderStudents = () => {
-        if(fetching) {
-            return <Spin />;
+        if (fetching) {
+            return <Spin/>;
         }
         if (students.length <= 0) {
-            return <Empty />;
+            return <Empty/>;
         }
-        return <Table
-            dataSource={students}
-            columns={columns}
-            rowKey={(student) => {return student.id}}
-            bordered title={()=>{return 'Students'}} />;
+        return <>
+            <StudentDrawerForm showDrawer={showDrawer} setShowDrawer={setShowDrawer} fetchStudents={fetchStudents}/>
+            <Table
+                dataSource={students}
+                columns={columns}
+                rowKey={(student) => {
+                    return student.id
+                }}
+                bordered title={() => {
+                <>
+                    <Tag style={{marginLeft: "5px"}}>Number of Students</Tag>
+                    <Badge count={students.length} className="site-badge-count-4"/>
+                    <Button type="primary" shape="round" icon={<PlusOutlined/>} size="small"
+                            onClick={() => setShowDrawer(!showDrawer)}>Add New Student</Button>
+                </>
+            }}/>
+        </>;
     }
 
     return (
@@ -78,7 +118,7 @@ function App() {
                         </Menu.Item>
                         <SubMenu key="sub1" icon={<UserOutlined/>} title="User">
                             {students.map((student, index) => {
-                                return <Menu.Item key={'sub1'+index}>{student.name}</Menu.Item>;
+                                return <Menu.Item key={'sub1' + index}>{student.name}</Menu.Item>;
                             })}
                         </SubMenu>
                         <SubMenu key="sub2" icon={<TeamOutlined/>} title="Team">
