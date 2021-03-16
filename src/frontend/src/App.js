@@ -11,7 +11,7 @@ import {
 } from '@ant-design/icons';
 import StudentDrawerForm from './StudentDrawerForm';
 import './App.css';
-import {successNotification} from "./Notification";
+import {errorNotification, successNotification} from "./Notification";
 
 const {Header, Content, Footer, Sider} = Layout;
 const {SubMenu} = Menu;
@@ -84,9 +84,15 @@ function App() {
             .then(dataFromJsonFunction => {
                 console.log(dataFromJsonFunction);
                 setStudents(dataFromJsonFunction);
-                setFetching(false);
+            }).catch(error => {
+            console.log(error.response);
+            error.response().json().then(res => {
+                console.log(res);
+                errorNotification("There was an Issue", `${res.message} [StatusCode: ${res.status}]`);
             });
-        setFetching(false);
+        }).finally(() => {
+            setFetching(false);
+        });
     }
 
     const removeStudent = (studentId, callback) => {
