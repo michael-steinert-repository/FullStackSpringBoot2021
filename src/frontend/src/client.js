@@ -10,7 +10,11 @@ export const addNewStudent = (student) => fetch("api/v1/students", {
     },
     method: 'POST',
     body: JSON.stringify(student)
-});
+}).then(checkStatus);
+
+export const deleteStudent = (studentId) => fetch(`api/v1/students/${studentId}`, {
+    method: 'DELETE',
+}).then(checkStatus);
 
 const checkStatus = response => {
     if (response.ok) {

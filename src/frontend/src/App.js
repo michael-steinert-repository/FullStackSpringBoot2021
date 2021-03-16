@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
-import {getAllStudents} from './client';
-import {Table, Layout, Menu, Breadcrumb, Spin, Empty, Button, Badge, Tag, Avatar} from 'antd';
+import {deleteStudent, getAllStudents} from './client';
+import {Table, Layout, Menu, Breadcrumb, Spin, Empty, Button, Badge, Tag, Avatar, Popconfirm} from 'antd';
 import {
     DesktopOutlined,
     PieChartOutlined,
@@ -11,6 +11,7 @@ import {
 } from '@ant-design/icons';
 import StudentDrawerForm from './StudentDrawerForm';
 import './App.css';
+import {successNotification} from "./Notification";
 
 const {Header, Content, Footer, Sider} = Layout;
 const {SubMenu} = Menu;
@@ -25,7 +26,7 @@ const TheAvatar = ({name}) => {
     }
     return <Avatar>{`${name.charAt(0)}${name.charAt(name.length - 1)}`}</Avatar>
 }
-const columns = [
+const columns = fetchStudents => [
     {
         title: '',
         dataIndex: 'avatar',
@@ -53,6 +54,22 @@ const columns = [
         title: 'Gender',
         dataIndex: 'gender',
         key: 'gender',
+    },
+    {
+        title: 'Actions',
+        key: 'actions',
+        render: (text, student) =>
+            <Radio.Group>
+                <Popconfirm
+                    placement='topRight'
+                    title={`Are you sure to delete ${student.name}`}
+                    onConfirm={() => removeStudent(student.id, fetchStudents)}
+                    okText='Yes'
+                    cancelText='No'>
+                    <Radio.Button value="small">Delete</Radio.Button>
+                </Popconfirm>
+                <Radio.Button value="small">Edit</Radio.Button>
+            </Radio.Group>
     }
 ];
 
@@ -65,10 +82,19 @@ function App() {
     const fetchStudents = () => {
         getAllStudents().then(response => response.json())
             .then(dataFromJsonFunction => {
+                console.log(dataFromJsonFunction);
                 setStudents(dataFromJsonFunction);
                 setFetching(false);
             });
         setFetching(false);
+    }
+
+    const removeStudent = (studentId, callback) => {
+        deleteStudent(studentId).then(() => {
+            successNotification("Student deleted", `Student with ${studentId} was deleted`);
+            /* Invoke the Method fetchStudents as a Callback Method */
+            callback();
+        });
     }
 
     useEffect(() => {
@@ -88,7 +114,7 @@ function App() {
             <StudentDrawerForm showDrawer={showDrawer} setShowDrawer={setShowDrawer} fetchStudents={fetchStudents}/>
             <Table
                 dataSource={students}
-                columns={columns}
+                columns={columns(fetchStudents)}
                 rowKey={(student) => {
                     return student.id
                 }}
@@ -110,12 +136,8 @@ function App() {
                 <Sider collapsible collapsed={collapsed} onCollapse={(collapsed) => setCollapsed(collapsed)}>
                     <div className="logo"/>
                     <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-                        <Menu.Item key="1" icon={<PieChartOutlined/>}>
-                            Option 1
-                        </Menu.Item>
-                        <Menu.Item key="2" icon={<DesktopOutlined/>}>
-                            Option 2
-                        </Menu.Item>
+                        <Menu.Item key="1" icon={<PieChartOutlined/>}>Option 1</Menu.Item>
+                        <Menu.Item key="2" icon={<DesktopOutlined/>}>Option 2</Menu.Item>
                         <SubMenu key="sub1" icon={<UserOutlined/>} title="User">
                             {students.map((student, index) => {
                                 return <Menu.Item key={'sub1' + index}>{student.name}</Menu.Item>;
@@ -125,9 +147,7 @@ function App() {
                             <Menu.Item key="3">Team 1</Menu.Item>
                             <Menu.Item key="4">Team 2</Menu.Item>
                         </SubMenu>
-                        <Menu.Item key="5" icon={<FileOutlined/>}>
-                            Files
-                        </Menu.Item>
+                        <Menu.Item key="5" icon={<FileOutlined/>}>Files</Menu.Item>
                     </Menu>
                 </Sider>
                 <Layout className="site-layout">
