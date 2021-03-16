@@ -64,3 +64,4 @@
 * Connect Docker Container PSQL to RDS Database Postgres "postgres" in AWS
     * Prerequisite: A Security Group for Inbound Rules (incoming connections to RDS) (for own IP) must be created
     * docker run -it --rm postgres:alpine psql -h aa1na9l8aczot69.cf4x5sfrt40q.eu-central-1.rds.amazonaws.com -U postgres -d postgres
+![AWS Config](https://user-images.githubusercontent.com/29623199/111369466-65bcfc80-8697-11eb-8dcc-cb7167754f2a.JPG)
