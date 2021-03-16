@@ -15,6 +15,7 @@ import {errorNotification, successNotification} from "./Notification";
 
 const {Header, Content, Footer, Sider} = Layout;
 const {SubMenu} = Menu;
+
 const TheAvatar = ({name}) => {
     let trim = name.trim();
     if (trim.length === 0) {
@@ -25,6 +26,18 @@ const TheAvatar = ({name}) => {
         return <Avatar>{name.charAt(0)}</Avatar>
     }
     return <Avatar>{`${name.charAt(0)}${name.charAt(name.length - 1)}`}</Avatar>
+}
+const removeStudent = (studentId, callback) => {
+    deleteStudent(studentId).then(() => {
+        successNotification("Student deleted", `Student with ${studentId} was deleted`);
+        /* Invoke the Method fetchStudents as a Callback Method */
+        callback();
+    }).catch(error => {
+        error.response.json().then(res => {
+            console.log(res);
+            errorNotification("There was an Issue",`${res.message} [${res.status}] [${res.error}]`)
+        });
+    });
 }
 const columns = fetchStudents => [
     {
@@ -92,19 +105,6 @@ function App() {
             });
         }).finally(() => {
             setFetching(false);
-        });
-    }
-
-    const removeStudent = (studentId, callback) => {
-        deleteStudent(studentId).then(() => {
-            successNotification("Student deleted", `Student with ${studentId} was deleted`);
-            /* Invoke the Method fetchStudents as a Callback Method */
-            callback();
-        }).catch(error => {
-            error.response.json().then(res => {
-                console.log(res);
-                errorNotification("There was an Issue",`${res.message} [${res.status}] [${res.error}]`)
-            });
         });
     }
 

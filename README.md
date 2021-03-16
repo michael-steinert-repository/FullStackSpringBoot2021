@@ -48,7 +48,6 @@
 ### Docker and Postgres
 ![Database Network](https://user-images.githubusercontent.com/29623199/111209347-2f667b00-85cc-11eb-986a-00fedcfbf0f6.JPG)
 
-
 * Create a Network for the Database
     * docker network create db
 
@@ -60,3 +59,8 @@
 
 * Create a Container PSQL which interact with the Database in the Network (The Network gives the Ability to Container to communicate with each other)
     * docker run -it --rm --network=db postgres:alpine psql -h db -U postgres
+  
+### AWS and Postgres
+* Connect Docker Container PSQL to RDS Database Postgres "postgres" in AWS
+    * Prerequisite: A Security Group for Inbound Rules (incoming connections to RDS) (for own IP) must be created
+    * docker run -it --rm postgres:alpine psql -h aa1na9l8aczot69.cf4x5sfrt40q.eu-central-1.rds.amazonaws.com -U postgres -d postgres
