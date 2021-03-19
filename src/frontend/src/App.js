@@ -1,6 +1,21 @@
 import {useState, useEffect} from 'react';
 import {deleteStudent, getAllStudents} from './client';
-import {Table, Layout, Menu, Breadcrumb, Spin, Empty, Button, Badge, Tag, Avatar, Radio, Popconfirm} from 'antd';
+import {
+    Table,
+    Layout,
+    Menu,
+    Breadcrumb,
+    Spin,
+    Empty,
+    Button,
+    Badge,
+    Tag,
+    Avatar,
+    Radio,
+    Popconfirm,
+    Image,
+    Divider
+} from 'antd';
 import {
     DesktopOutlined,
     PieChartOutlined,
@@ -86,7 +101,7 @@ const columns = fetchStudents => [
     }
 ];
 
-function App() {
+const App = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [fetching, setFetching] = useState(true);
     const [students, setStudents] = useState([]);
@@ -97,9 +112,9 @@ function App() {
             .then(dataFromJsonFunction => {
                 console.log(dataFromJsonFunction);
                 setStudents(dataFromJsonFunction);
-            }).catch(error => {
+            }).catch((error) => {
             console.log(error.response);
-            error.response().json().then(res => {
+            error.response.json().then(res => {
                 console.log(res);
                 errorNotification("There was an Issue", `${res.message} [StatusCode: ${res.status}]`);
             });
@@ -183,7 +198,14 @@ function App() {
                             {renderStudents()}
                         </div>
                     </Content>
-                    <Footer style={{textAlign: 'center'}}>Full Stack Project</Footer>
+                    <Footer style={{textAlign: 'center'}}>
+                        <Image width={75} src="https://user-images.githubusercontent.com/29623199/111429070-bdd81b00-86f8-11eb-8e40-0ca003b2755f.png"/>
+                        <Divider>
+                            <a rel="noopener noreferrer" target="_blank" href="#">
+                                Fullstack Spring Boot 2021
+                            </a>
+                        </Divider>
+                    </Footer>
                 </Layout>
             </Layout>}
         </div>
