@@ -12,7 +12,7 @@
     <artifactId>FullStackSpringBoot2021</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>FullStackSpringBoot2021</name>
-    <description>Demo project for Spring Boot</description>
+    <description>Fullstack Spring Boot and React Project</description>
     <properties>
         <java.version>11</java.version>
         <app.image.name>fullstack-spring-boot-2021</app.image.name>
