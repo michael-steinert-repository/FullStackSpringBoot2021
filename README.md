@@ -1,5 +1,10 @@
 ## Full Stack Spring Boot 2021
+![Project Diagram](https://user-images.githubusercontent.com/29623199/111837286-f72aa980-88f7-11eb-9f16-446bc39b4bc4.png)
+
+
 ![Architecture Diagram](https://user-images.githubusercontent.com/29623199/111209413-43aa7800-85cc-11eb-80a0-461a9a417b7b.JPG)
+
+![Class Diagramm](https://user-images.githubusercontent.com/29623199/111837373-175a6880-88f8-11eb-9fda-a2bd8504e783.JPG)
 
 ### Jib Maven Plugin
 *Jib is a deamonless Maven Plugin for building Docker and OCI Images for Java Applications.*
