@@ -17,16 +17,16 @@ public class StudentService {
     }
 
     public void addStudent(Student student) {
-        Boolean existsEmail = studentRepository.selectExistsEmail(student.getEmail());
+        Boolean existsEmail = studentRepository.selectEmailExists(student.getEmail());
         if (existsEmail) {
-            throw new BadRequestException("Email " + student.getEmail() + " is taken");
+            throw new BadRequestException(String.format("Email %s is taken", student.getEmail()));
         }
         studentRepository.save(student);
     }
 
     public void deleteStudent(Long studentId) {
         if (!studentRepository.existsById(studentId)) {
-            throw new StudentNotFoundException("Student with id " + studentId + " does not exists");
+            throw new StudentNotFoundException(String.format("Student with id %s does not exists", studentId));
         }
         studentRepository.deleteById(studentId);
     }
