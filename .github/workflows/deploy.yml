@@ -67,7 +67,8 @@ jobs:
           ./mvnw --no-transfer-progress clean package \
             -P build-frontend \
             -P jib-push-to-dockerhub \
-              -Dapp.image.tag=${{steps.build-number.outputs.BUILD_NUMBER}}
+              # -Dapp.image.tag=${{steps.build-number.outputs.BUILD_NUMBER}}
+              -Dapp.image.tag=latest
       - uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
@@ -75,16 +76,19 @@ jobs:
           text: 'Pushed michael-steinert-repository/FullStackSpringBoot2021:${{steps.build-number.outputs.BUILD_NUMBER}} to DockerHub'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
       - name: Update and commit app version in docker-compose.yaml
         run: |
           BUILD_NUMBER=${{steps.build-number.outputs.BUILD_NUMBER}}
           echo -e "Current elasticbeanstalk/docker-compose.yml\n$(cat elasticbeanstalk/docker-compose.yml)"
-          sed -i -E 's_(michaelxsteinertxcontainer/fullstack-spring-boot-2021:)([^"]*)_\1'${BUILD_NUMBER}'_' elasticbeanstalk/docker-compose.yml
+          # sed -i -E 's_(michaelxsteinertxcontainer/fullstack-spring-boot-2021:)([^"]*)_\1'${BUILD_NUMBER}'_' elasticbeanstalk/docker-compose.yml
+          sed -i -E 's_(michaelxsteinertxcontainer/fullstack-spring-boot-2021:latest)'_' elasticbeanstalk/docker-compose.yml
           echo -e "Current elasticbeanstalk/docker-compose.yml\n$(cat elasticbeanstalk/docker-compose.yml)"
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add elasticbeanstalk/docker-compose.yml
-          git commit -m "New App Version: ${BUILD_NUMBER}"
+          # git commit -m "New App Version: ${BUILD_NUMBER}"
+          git commit -m "New App Version: Latest"
           git push
 
       - uses: 8398a7/action-slack@v3
@@ -103,8 +107,10 @@ jobs:
           environment_name: ${{ env.EB_ENVIRONMENT_NAME }}
           application_name: ${{ env.EB_APPLICATION_NAME }}
           deployment_package: ${{ env.EB_DEPLOYMENT_PACKAGE }}
-          version_label: ${{ steps.build-number.outputs.BUILD_NUMBER }}
-          version_description: Version ${{steps.build-number.outputs.BUILD_NUMBER}} deployed via github actions ${{ github.sha }}
+          # version_label: ${{ steps.build-number.outputs.BUILD_NUMBER }}
+          version_label: latest
+          # version_description: Version ${{steps.build-number.outputs.BUILD_NUMBER}} deployed via github actions ${{ github.sha }}
+          version_description: Version latest deployed via github actions ${{ github.sha }}
           wait_for_deployment: 60
       - uses: 8398a7/action-slack@v3
         with:
