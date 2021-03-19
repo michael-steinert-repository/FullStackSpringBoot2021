@@ -8,7 +8,7 @@ on:
 
 env:
   POSTGRESQL_VERSION: 12.5
-  POSTGRESQL_IMAGE: postgres:${{ POSTGRESQL_VERSION }}
+  POSTGRESQL_IMAGE: postgres:${{ env.POSTGRESQL_VERSION }}
   POSTGRESQL_DB: fullstackdb
   POSTGRESQL_USER: postgres
   POSTGRESQL_PASSWORD: password
