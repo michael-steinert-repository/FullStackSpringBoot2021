@@ -1,6 +1,7 @@
 package com.example.FullStackSpringBoot2021.student;
 
 import com.example.FullStackSpringBoot2021.student.exception.BadRequestException;
+import com.example.FullStackSpringBoot2021.student.exception.StudentNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,8 +12,10 @@ import org.mockito.MockitoAnnotations;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 class StudentServiceTest {
@@ -71,11 +74,28 @@ class StudentServiceTest {
                 .hasMessageContaining(String.format("Email %s is taken", student.getEmail()));
     }
 
-
     @Test
     void itShouldDeleteStudent() {
         /* Given */
+        long studentId = 1L;
+        given(studentRepository.existsById(studentId)).willReturn(true);
+        /* When */
+        studentRepository.deleteById(studentId);
+        /* Then */
+        verify(studentRepository).deleteById(studentId);
+    }
+
+    @Test
+    void itThrownAnExceptionWhenShouldDeleteStudent() {
+        /* Given */
+        long studentId = 1L;
+        given(studentRepository.existsById(studentId)).willReturn(false);
         /* When */
         /* Then */
+        assertThatThrownBy(() -> studentService.deleteStudent(studentId))
+                .isInstanceOf(StudentNotFoundException.class)
+                .hasMessageContaining(String.format("Student with id %s does not exists", studentId));
+
+        verify(studentRepository, never()).deleteById(any());
     }
 }
